@@ -3,7 +3,6 @@ package com.example.manishchoudhary.newsfeedapp;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
-import android.provider.DocumentsContract;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -16,9 +15,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.jsoup.Jsoup;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -27,7 +25,6 @@ import org.xml.sax.SAXException;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,7 +44,8 @@ public class MainActivity extends Activity {
     private RecyclerView listView;
     private NewsFeedListAdapter listAdapter;
     private List<NewsFeedItem> feedItems;
-    private String URL_FEED = "http://timesofindia.indiatimes.com/rssfeedstopstories.cms";
+    private String URL_FEED = "http://timesofindia.indiatimes.com/rssfeeds/-2128936835.cms";
+    private String imageLink, newsLink, desc;
 
     @SuppressLint("NewApi")
     @Override
@@ -117,12 +115,16 @@ public class MainActivity extends Activity {
             NodeList nl = doc.getElementsByTagName(KEY_ITEM);
 
             for (int i = 0; i < nl.getLength(); i++) {
+                imageLink = null;
                 Element e = (Element) nl.item(i);
                 NewsFeedItem item = new NewsFeedItem();
                 item.setTitle(getValue(e, KEY_TITLE));
-                item.setDescription(getValue(e, DESCRIPTION));
                 item.setPubDate(getValue(e, PUB_DATE));
                 item.setLink(getValue(e, LINK));
+                getUrl(getValue(e, DESCRIPTION));
+                item.setDescription(desc);
+                item.setImageLink(imageLink);
+                item.setNewsLink(newsLink);
                 feedItems.add(item);
             }
 
@@ -131,6 +133,22 @@ public class MainActivity extends Activity {
             listAdapter.notifyDataSetChanged();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private void getUrl(String html){
+        String linkInnerH;
+        //String html = "<p>An <a href='http://example.com/'><b>example</b></a> link.</p>";
+        org.jsoup.nodes.Document doc = Jsoup.parse(html);
+        org.jsoup.nodes.Element link = doc.select("a").first();
+
+        desc = doc.body().text(); // "An example link"
+        if(link != null) {
+            newsLink = link.attr("href"); // "http://example.com/"
+            linkInnerH = link.html(); // "<b>example</b>"
+            org.jsoup.nodes.Document d = Jsoup.parse(linkInnerH);
+            org.jsoup.nodes.Element imgLink = d.select("img").first();
+            imageLink = imgLink.attr("src");
         }
     }
 

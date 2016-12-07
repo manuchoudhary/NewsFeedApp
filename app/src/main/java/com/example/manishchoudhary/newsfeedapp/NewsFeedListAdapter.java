@@ -1,6 +1,7 @@
 package com.example.manishchoudhary.newsfeedapp;
 
 import android.app.Activity;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -46,13 +47,17 @@ public class NewsFeedListAdapter extends RecyclerView.Adapter<NewsFeedListAdapte
     }
 
     public class NewsFeedHolder extends ViewHolder {
-        TextView title,desc,link;
+        TextView title,desc,time;
+        //com.android.volley.toolbox.NetworkImageView profilePic;
+        NewsImageView image;
 
         public NewsFeedHolder(View v) {
             super(v);
             this.title = (TextView) v.findViewById(R.id.txtTitle);
             this.desc = (TextView) v.findViewById(R.id.txtDesc);
-            this.link = (TextView) v.findViewById(R.id.txtLink);
+            this.time = (TextView) v.findViewById(R.id.timestamp);
+            //this.profilePic = (com.android.volley.toolbox.NetworkImageView) v.findViewById(R.id.profilePic);
+            this.image = (NewsImageView) v.findViewById(R.id.newsImage);
         }
     }
 
@@ -67,14 +72,30 @@ public class NewsFeedListAdapter extends RecyclerView.Adapter<NewsFeedListAdapte
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
         NewsFeedHolder holder = (NewsFeedHolder) viewHolder;
-        if (!TextUtils.isEmpty(feedItems.get(position).getTitle())) {
+        if (!TextUtils.isEmpty(feedItems.get(position).getTitle()) && feedItems.get(position).getTitle() != null) {
             holder.title.setText(feedItems.get(position).getTitle());
-            holder.desc.setText(feedItems.get(position).getDescription());
-            holder.link.setText(feedItems.get(position).getLink());
+            if (!TextUtils.isEmpty(feedItems.get(position).getDescription()) && feedItems.get(position).getDescription() != null) {
+                holder.desc.setText(feedItems.get(position).getDescription());
+            }else{
+                holder.desc.setVisibility(View.GONE);
+            }
+            if (!TextUtils.isEmpty(feedItems.get(position).getPubDate()) && feedItems.get(position).getPubDate() != null) {
+                holder.time.setText(feedItems.get(position).getPubDate());
+            }else{
+                holder.time.setVisibility(View.GONE);
+            }
+            if (!TextUtils.isEmpty(feedItems.get(position).getImageLink()) && feedItems.get(position).getImageLink() != null) {
+                holder.image.setImageUrl(feedItems.get(position).getImageLink(), imageLoader);
+            }else {
+                holder.image.setVisibility(View.GONE);
+            }
+            //holder.profilePic.setImageResource(R.mipmap.ic_launcher);
         } else {
             holder.title.setVisibility(View.GONE);
             holder.desc.setVisibility(View.GONE);
-            holder.link.setVisibility(View.GONE);
+            holder.time.setVisibility(View.GONE);
+            holder.image.setVisibility(View.GONE);
+            //holder.profilePic.setVisibility(View.GONE);
         }
     }
 }
