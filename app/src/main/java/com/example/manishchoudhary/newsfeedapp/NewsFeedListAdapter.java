@@ -72,24 +72,24 @@ public class NewsFeedListAdapter extends RecyclerView.Adapter<NewsFeedListAdapte
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
         NewsFeedHolder holder = (NewsFeedHolder) viewHolder;
-        if (!TextUtils.isEmpty(feedItems.get(position).getTitle()) && feedItems.get(position).getTitle() != null) {
+        setVisisbility(holder);
+        if (!feedItems.get(position).getTitle().isEmpty()) {
             holder.title.setText(feedItems.get(position).getTitle());
-            if (!TextUtils.isEmpty(feedItems.get(position).getDescription()) && feedItems.get(position).getDescription() != null) {
+            if (!feedItems.get(position).getDescription().isEmpty()) {
                 holder.desc.setText(feedItems.get(position).getDescription());
             }else{
                 holder.desc.setVisibility(View.GONE);
             }
-            if (!TextUtils.isEmpty(feedItems.get(position).getPubDate()) && feedItems.get(position).getPubDate() != null) {
+            if (!feedItems.get(position).getPubDate().isEmpty()) {
                 holder.time.setText(feedItems.get(position).getPubDate());
             }else{
                 holder.time.setVisibility(View.GONE);
             }
-            if (!TextUtils.isEmpty(feedItems.get(position).getImageLink()) && feedItems.get(position).getImageLink() != null) {
+            if (feedItems.get(position).getImageLink() != null) {
                 holder.image.setImageUrl(feedItems.get(position).getImageLink(), imageLoader);
             }else {
                 holder.image.setVisibility(View.GONE);
             }
-            //holder.profilePic.setImageResource(R.mipmap.ic_launcher);
         } else {
             holder.title.setVisibility(View.GONE);
             holder.desc.setVisibility(View.GONE);
@@ -97,5 +97,12 @@ public class NewsFeedListAdapter extends RecyclerView.Adapter<NewsFeedListAdapte
             holder.image.setVisibility(View.GONE);
             //holder.profilePic.setVisibility(View.GONE);
         }
+    }
+
+    public void setVisisbility(NewsFeedHolder holder){
+        holder.title.setVisibility(View.VISIBLE);
+        holder.desc.setVisibility(View.VISIBLE);
+        holder.time.setVisibility(View.VISIBLE);
+        holder.image.setVisibility(View.VISIBLE);
     }
 }

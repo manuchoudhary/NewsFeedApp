@@ -45,7 +45,6 @@ public class MainActivity extends Activity {
     private NewsFeedListAdapter listAdapter;
     private List<NewsFeedItem> feedItems;
     private String URL_FEED = "http://timesofindia.indiatimes.com/rssfeeds/-2128936835.cms";
-    private String imageLink, newsLink, desc;
 
     @SuppressLint("NewApi")
     @Override
@@ -115,16 +114,15 @@ public class MainActivity extends Activity {
             NodeList nl = doc.getElementsByTagName(KEY_ITEM);
 
             for (int i = 0; i < nl.getLength(); i++) {
-                imageLink = null;
                 Element e = (Element) nl.item(i);
                 NewsFeedItem item = new NewsFeedItem();
                 item.setTitle(getValue(e, KEY_TITLE));
                 item.setPubDate(getValue(e, PUB_DATE));
                 item.setLink(getValue(e, LINK));
-                getUrl(getValue(e, DESCRIPTION));
-                item.setDescription(desc);
-                item.setImageLink(imageLink);
-                item.setNewsLink(newsLink);
+                item.setDescription(getUrl(getValue(e, DESCRIPTION)));
+                item.setNewsLink(getNewsLink(getValue(e, DESCRIPTION)));
+                item.setImageLink(getImgLink(getValue(e, DESCRIPTION)));
+
                 feedItems.add(item);
             }
 
@@ -136,20 +134,33 @@ public class MainActivity extends Activity {
         }
     }
 
-    private void getUrl(String html){
-        String linkInnerH;
-        //String html = "<p>An <a href='http://example.com/'><b>example</b></a> link.</p>";
+    private String getUrl(String html){
+        org.jsoup.nodes.Document doc = Jsoup.parse(html);
+        return doc.body().text();
+    }
+
+    private String getNewsLink(String html){
+        String newsLink = null;
         org.jsoup.nodes.Document doc = Jsoup.parse(html);
         org.jsoup.nodes.Element link = doc.select("a").first();
-
-        desc = doc.body().text(); // "An example link"
         if(link != null) {
-            newsLink = link.attr("href"); // "http://example.com/"
+            newsLink = link.attr("href");
+        }
+        return newsLink;
+    }
+
+    private String getImgLink(String img){
+        String imageLink = null;
+        String linkInnerH;
+        org.jsoup.nodes.Document doc = Jsoup.parse(img);
+        org.jsoup.nodes.Element link = doc.select("a").first();
+        if(link != null) {
             linkInnerH = link.html(); // "<b>example</b>"
             org.jsoup.nodes.Document d = Jsoup.parse(linkInnerH);
             org.jsoup.nodes.Element imgLink = d.select("img").first();
             imageLink = imgLink.attr("src");
         }
+        return imageLink;
     }
 
     public final String getElementValue( Node elem ) {
