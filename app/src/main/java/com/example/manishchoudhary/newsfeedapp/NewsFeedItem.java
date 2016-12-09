@@ -1,12 +1,13 @@
 package com.example.manishchoudhary.newsfeedapp;
 
+import java.io.Serializable;
 import java.net.URL;
 
 /**
  * Created by manish.choudhary on 11/25/2016.
  */
 
-public class NewsFeedItem {
+public class NewsFeedItem implements Serializable {
     private int id;
     private String title, description, pubDate;
     private String link, imageLink, newsLink;

@@ -58,7 +58,6 @@ public class MainActivity extends Activity {
     }
 
     private void callURLFeed() {
-
         StringRequest stringRequest = new StringRequest(URL_FEED,
                 new Response.Listener<String>() {
                     @Override

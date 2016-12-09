@@ -1,7 +1,9 @@
 package com.example.manishchoudhary.newsfeedapp;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.net.Uri;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -47,6 +49,7 @@ public class NewsFeedListAdapter extends RecyclerView.Adapter<NewsFeedListAdapte
     }
 
     public class NewsFeedHolder extends ViewHolder {
+        CardView card;
         TextView title,desc,time;
         //com.android.volley.toolbox.NetworkImageView profilePic;
         NewsImageView image;
@@ -56,7 +59,7 @@ public class NewsFeedListAdapter extends RecyclerView.Adapter<NewsFeedListAdapte
             this.title = (TextView) v.findViewById(R.id.txtTitle);
             this.desc = (TextView) v.findViewById(R.id.txtDesc);
             this.time = (TextView) v.findViewById(R.id.timestamp);
-            //this.profilePic = (com.android.volley.toolbox.NetworkImageView) v.findViewById(R.id.profilePic);
+            this.card = (CardView) v.findViewById(R.id.newsCard);
             this.image = (NewsImageView) v.findViewById(R.id.newsImage);
         }
     }
@@ -97,6 +100,15 @@ public class NewsFeedListAdapter extends RecyclerView.Adapter<NewsFeedListAdapte
             holder.image.setVisibility(View.GONE);
             //holder.profilePic.setVisibility(View.GONE);
         }
+
+        holder.card.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(activity, DetailActivity.class);
+                intent.putExtra("News Feed", feedItems.get(position));
+                activity.startActivity(intent);
+            }
+        });
     }
 
     public void setVisisbility(NewsFeedHolder holder){
