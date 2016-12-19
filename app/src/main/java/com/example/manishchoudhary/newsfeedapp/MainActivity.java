@@ -44,7 +44,7 @@ public class MainActivity extends Activity {
     private RecyclerView listView;
     private NewsFeedListAdapter listAdapter;
     private List<NewsFeedItem> feedItems;
-    private String URL_FEED = "http://timesofindia.indiatimes.com/rssfeeds/-2128936835.cms";
+    private String URL_FEED = "http://timesofindia.indiatimes.com/rssfeeds/296589292.cms";
 
     @SuppressLint("NewApi")
     @Override
